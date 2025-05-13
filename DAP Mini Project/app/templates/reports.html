@@ -1,0 +1,121 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="mb-4">Generate Financial Reports</h2>
+                    
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h4 class="mb-0">Report Settings</h4>
+                                </div>
+                                <div class="card-body">
+                                    <form method="POST" action="{{ url_for('reports.generate_report') }}">
+                                        {{ form.hidden_tag() }}
+                                        
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    {{ form.start_date.label(class="form-label") }}
+                                                    {{ form.start_date(class="form-control", type="date") }}
+                                                    {% if form.start_date.errors %}
+                                                    <div class="invalid-feedback d-block">
+                                                        {% for error in form.start_date.errors %}
+                                                        <span>{{ error }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    {{ form.end_date.label(class="form-label") }}
+                                                    {{ form.end_date(class="form-control", type="date") }}
+                                                    {% if form.end_date.errors %}
+                                                    <div class="invalid-feedback d-block">
+                                                        {% for error in form.end_date.errors %}
+                                                        <span>{{ error }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    {{ form.report_type.label(class="form-label") }}
+                                                    {{ form.report_type(class="form-select") }}
+                                                    {% if form.report_type.errors %}
+                                                    <div class="invalid-feedback d-block">
+                                                        {% for error in form.report_type.errors %}
+                                                        <span>{{ error }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    {{ form.format.label(class="form-label") }}
+                                                    {{ form.format(class="form-select") }}
+                                                    {% if form.format.errors %}
+                                                    <div class="invalid-feedback d-block">
+                                                        {% for error in form.format.errors %}
+                                                        <span>{{ error }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mt-4">
+                                            {{ form.submit(class="btn btn-primary w-100") }}
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-5">
+                            <div class="card h-100">
+                                <div class="card-header">
+                                    <h4 class="mb-0">Report Information</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-4">
+                                        <h5><i class="fas fa-file-pdf text-danger me-2"></i>PDF Reports</h5>
+                                        <p>PDF reports include formatted transaction listings, summary statistics, and visualized data for your selected period.</p>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <h5><i class="fas fa-file-excel text-success me-2"></i>Excel Reports</h5>
+                                        <p>Excel reports include raw data for further analysis, pivot tables, and interactive charts to help you understand your finances.</p>
+                                    </div>
+                                    
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        Reports are generated based on your selected date range. For the most comprehensive analysis, we recommend including at least one full month of data.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Any report-specific JavaScript can go here
+</script>
+{% endblock %} 

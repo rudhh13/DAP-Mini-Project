@@ -1,0 +1,189 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="mb-4">Edit Transaction</h2>
+                    
+                    <form method="POST" action="">
+                        {{ form.hidden_tag() }}
+                        
+                        <!-- Transaction Type -->
+                        <div class="form-group mb-4">
+                            {{ form.type.label(class="form-label") }}
+                            <div class="btn-group w-100" role="group">
+                                <input type="radio" class="btn-check" name="type" id="type-expense" value="expense" {% if form.type.data == 'expense' %}checked{% endif %}>
+                                <label class="btn btn-outline-danger" for="type-expense">
+                                    <i class="fas fa-shopping-cart me-1"></i> Expense
+                                </label>
+                                
+                                <input type="radio" class="btn-check" name="type" id="type-income" value="income" {% if form.type.data == 'income' %}checked{% endif %}>
+                                <label class="btn btn-outline-success" for="type-income">
+                                    <i class="fas fa-wallet me-1"></i> Income
+                                </label>
+                            </div>
+                            {% if form.type.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.type.errors %}
+                                <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Category -->
+                        <div class="form-group mb-4">
+                            <label for="category_id" class="form-label">Category</label>
+                            
+                            <!-- Expense Categories -->
+                            <select name="category_id" id="expense_categories" class="form-select {% if form.type.data != 'expense' %}d-none{% endif %}">
+                                <option value="1" {% if transaction.category_id == 1 %}selected{% endif %}>Food</option> 
+                                <option value="2" {% if transaction.category_id == 2 %}selected{% endif %}>Transportation</option>
+                                <option value="3" {% if transaction.category_id == 3 %}selected{% endif %}>Entertainment</option>
+                                <option value="4" {% if transaction.category_id == 4 %}selected{% endif %}>Shopping</option>
+                                <option value="5" {% if transaction.category_id == 5 %}selected{% endif %}>Housing</option>
+                                <option value="6" {% if transaction.category_id == 6 %}selected{% endif %}>Utilities</option>
+                                <option value="7" {% if transaction.category_id == 7 %}selected{% endif %}>Medical</option>
+                                <option value="8" {% if transaction.category_id == 8 %}selected{% endif %}>Education</option>
+                                <option value="9" {% if transaction.category_id == 9 %}selected{% endif %}>Insurance</option>
+                                <option value="10" {% if transaction.category_id == 10 %}selected{% endif %}>Other</option>
+                                {% for category in expense_categories %}
+                                <option value="{{ category.id }}" {% if transaction.category_id == category.id %}selected{% endif %}>{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                            
+                            <!-- Income Categories -->
+                            <select name="category_id" id="income_categories" class="form-select {% if form.type.data != 'income' %}d-none{% endif %}">
+                                <option value="11" {% if transaction.category_id == 11 %}selected{% endif %}>Base Salary</option>
+                                <option value="12" {% if transaction.category_id == 12 %}selected{% endif %}>Performance Bonus</option>
+                                <option value="13" {% if transaction.category_id == 13 %}selected{% endif %}>Overtime Pay</option>
+                                <option value="14" {% if transaction.category_id == 14 %}selected{% endif %}>Commission</option>
+                                <option value="15" {% if transaction.category_id == 15 %}selected{% endif %}>Allowances</option>
+                                <option value="16" {% if transaction.category_id == 16 %}selected{% endif %}>Stock Options or Equity</option>
+                                <option value="17" {% if transaction.category_id == 17 %}selected{% endif %}>Profit Sharing</option>
+                                <option value="18" {% if transaction.category_id == 18 %}selected{% endif %}>Incentives</option>
+                                <option value="19" {% if transaction.category_id == 19 %}selected{% endif %}>Gratuity</option>
+                                <option value="20" {% if transaction.category_id == 20 %}selected{% endif %}>Provident Fund or Retirement Benefits</option>
+                                <option value="21" {% if transaction.category_id == 21 %}selected{% endif %}>Other Benefits</option>
+                                {% for category in income_categories %}
+                                <option value="{{ category.id }}" {% if transaction.category_id == category.id %}selected{% endif %}>{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                            
+                            {% if form.category_id.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.category_id.errors %}
+                                <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            {{ form.amount.label(class="form-label") }}
+                            <div class="input-group">
+                                <span class="input-group-text">₹</span>
+                                {{ form.amount(class="form-control", placeholder="0.00") }}
+                            </div>
+                            {% if form.amount.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.amount.errors %}
+                                <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            {{ form.date.label(class="form-label") }}
+                            {{ form.date(class="form-control", type="date") }}
+                            {% if form.date.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.date.errors %}
+                                <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group mb-4">
+                            {{ form.description.label(class="form-label") }}
+                            {{ form.description(class="form-control", placeholder="Transaction description (optional)") }}
+                            {% if form.description.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.description.errors %}
+                                <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('transactions.view_transactions') }}" class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" name="action" value="save" class="btn btn-primary">Update Transaction</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .category-icon {
+        padding: 10px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 2px solid transparent;
+        background-color: #f8f9fa;
+    }
+    
+    .category-icon:hover {
+        background-color: #e9ecef;
+    }
+    
+    .category-icon.selected {
+        border-color: #0d6efd;
+        background-color: #e7f1ff;
+    }
+    
+    .category-icon i {
+        font-size: 1.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const typeExpense = document.getElementById('type-expense');
+        const typeIncome = document.getElementById('type-income');
+        const expenseCategoriesSelect = document.getElementById('expense_categories');
+        const incomeCategoriesSelect = document.getElementById('income_categories');
+        
+        // Switch between expense and income categories
+        typeExpense.addEventListener('change', function() {
+            if (this.checked) {
+                expenseCategoriesSelect.classList.remove('d-none');
+                incomeCategoriesSelect.classList.add('d-none');
+                incomeCategoriesSelect.name = ""; // Disable income select for form submission
+                expenseCategoriesSelect.name = "category_id"; // Enable expense select
+            }
+        });
+        
+        typeIncome.addEventListener('change', function() {
+            if (this.checked) {
+                incomeCategoriesSelect.classList.remove('d-none');
+                expenseCategoriesSelect.classList.add('d-none');
+                expenseCategoriesSelect.name = ""; // Disable expense select for form submission
+                incomeCategoriesSelect.name = "category_id"; // Enable income select
+            }
+        });
+    });
+</script>
+{% endblock %} 
