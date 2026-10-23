@@ -3,7 +3,10 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
+<<<<<<< HEAD
 from flask_wtf.csrf import CSRFProtect
+=======
+>>>>>>> b4d63f894075ba960922b212159d24e9499cd897
 from app.config.config import Config
 
 # Initialize extensions
@@ -15,7 +18,10 @@ login_manager.login_message_category = 'info'
 login_manager.login_message = 'Please log in to access this page.'
 bcrypt = Bcrypt()
 migrate = Migrate()
+<<<<<<< HEAD
 csrf = CSRFProtect()
+=======
+>>>>>>> b4d63f894075ba960922b212159d24e9499cd897
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -26,7 +32,10 @@ def create_app(config_class=Config):
     login_manager.init_app(app)
     bcrypt.init_app(app)
     migrate.init_app(app, db)
+<<<<<<< HEAD
     csrf.init_app(app)
+=======
+>>>>>>> b4d63f894075ba960922b212159d24e9499cd897
     
     # Import and register blueprints
     from app.routes.main import main

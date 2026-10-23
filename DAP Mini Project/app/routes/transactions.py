@@ -5,6 +5,7 @@ from app.models.transaction import Transaction
 from app.models.category import Category
 from app.utils.forms import TransactionForm
 from datetime import datetime
+<<<<<<< HEAD
 from sqlalchemy import func, desc, asc
 from flask_wtf import FlaskForm
 from wtforms import HiddenField
@@ -15,6 +16,12 @@ transactions = Blueprint('transactions', __name__)
 class DeleteForm(FlaskForm):
     pass
 
+=======
+from sqlalchemy import func, desc
+
+transactions = Blueprint('transactions', __name__)
+
+>>>>>>> b4d63f894075ba960922b212159d24e9499cd897
 # Ensure custom categories exist
 def ensure_categories_exist():
     """Make sure all required categories exist in the database"""
@@ -275,6 +282,7 @@ def edit_transaction(transaction_id):
 @login_required
 def delete_transaction(transaction_id):
     """Delete a transaction"""
+<<<<<<< HEAD
     form = DeleteForm()
     if form.validate_on_submit():
         transaction = Transaction.query.get_or_404(transaction_id)
@@ -291,4 +299,17 @@ def delete_transaction(transaction_id):
     else:
         flash('Could not delete transaction. CSRF verification failed.', 'danger')
     
+=======
+    transaction = Transaction.query.get_or_404(transaction_id)
+    
+    # Check if current user owns this transaction
+    if transaction.user_id != current_user.id:
+        flash('You do not have permission to delete this transaction.', 'danger')
+        return redirect(url_for('transactions.view_transactions'))
+    
+    db.session.delete(transaction)
+    db.session.commit()
+    
+    flash('Your transaction has been deleted!', 'success')
+>>>>>>> b4d63f894075ba960922b212159d24e9499cd897
     return redirect(url_for('transactions.view_transactions')) 
