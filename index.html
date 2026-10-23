@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Reminder System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="theme-color" content="#4361ee">
+</head>
+<body class="theme-dark">
+    <div class="app-container">
+        <header>
+            <h1><i class="fas fa-bell"></i> Smart Reminder System</h1>
+            <button id="theme-toggle" class="theme-toggle" title="Toggle Dark/Blue Mode">
+                <i class="fas fa-palette"></i>
+            </button>
+        </header>
+
+        <div class="content">
+            <div class="sidebar">
+                <nav>
+                    <ul>
+                        <li class="active"><i class="fas fa-home"></i> Dashboard</li>
+                        <li><i class="fas fa-calendar"></i> Calendar</li>
+                        <li><i class="fas fa-tasks"></i> Tasks</li>
+                        <li><i class="fas fa-cog"></i> Settings</li>
+                    </ul>
+                </nav>
+            </div>
+
+            <main>
+                <div class="create-reminder">
+                    <h2>Create New Reminder</h2>
+                    <form id="reminder-form">
+                        <div class="form-group">
+                            <label for="title">Title</label>
+                            <input type="text" id="title" placeholder="Enter reminder title" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea id="description" placeholder="Enter reminder details"></textarea>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="date">Date</label>
+                                <input type="date" id="date" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="time">Time</label>
+                                <input type="time" id="time" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="priority">Priority</label>
+                            <select id="priority">
+                                <option value="low">Low</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="category">Category</label>
+                            <select id="category">
+                                <option value="work">Work</option>
+                                <option value="personal">Personal</option>
+                                <option value="health">Health</option>
+                                <option value="finance">Finance</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">Add Reminder</button>
+                    </form>
+                </div>
+
+                <div class="reminders-container">
+                    <div class="reminders-header">
+                        <h2>Upcoming Reminders</h2>
+                        <div class="filter-options">
+                            <select id="filter-priority">
+                                <option value="all">All Priorities</option>
+                                <option value="high">High</option>
+                                <option value="medium">Medium</option>
+                                <option value="low">Low</option>
+                            </select>
+                            <select id="filter-category">
+                                <option value="all">All Categories</option>
+                                <option value="work">Work</option>
+                                <option value="personal">Personal</option>
+                                <option value="health">Health</option>
+                                <option value="finance">Finance</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <ul id="reminders-list" class="reminders-list">
+                        <!-- Reminders will be added here dynamically -->
+                    </ul>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <div id="notification" class="notification">
+        <span id="notification-message"></span>
+        <button id="notification-close"><i class="fas fa-times"></i></button>
+    </div>
+
+    <!-- Load JavaScript files -->
+    <script src="settings.js"></script>
+    <script src="calendar.js"></script>
+    <script src="tasks.js"></script>
+    <script src="app.js"></script>
+    
+    <script>
+        // Theme toggle functionality
+        document.getElementById('theme-toggle').addEventListener('click', function() {
+            // Add rotation animation to the icon
+            const icon = this.querySelector('i');
+            icon.style.transition = 'transform 0.5s ease';
+            icon.style.transform = 'rotate(180deg)';
+            
+            // After animation completes, reset the transform
+            setTimeout(() => {
+                icon.style.transition = 'none';
+                icon.style.transform = 'rotate(0)';
+            }, 500);
+            
+            toggleTheme();
+            updateThemeToggleIcon();
+        });
+        
+        // Update theme toggle icon based on current theme
+        function updateThemeToggleIcon() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const icon = themeToggle.querySelector('i');
+            
+            if (document.body.classList.contains('theme-dark')) {
+                icon.className = 'fas fa-sun';
+                themeToggle.title = 'Switch to Light Mode';
+            } else {
+                icon.className = 'fas fa-moon';
+                themeToggle.title = 'Switch to Dark Mode';
+            }
+        }
+        
+        // Initialize the theme toggle icon
+        document.addEventListener('DOMContentLoaded', updateThemeToggleIcon);
+    </script>
+</body>
+</html> 

@@ -1,0 +1,202 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container py-4">
+    <!-- Month overview -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title">{{ month_name }} Overview</h2>
+                    <div class="row text-center mt-4">
+                        <div class="col-md-4 mb-3">
+                            <div class="p-3 bg-success bg-opacity-10 rounded">
+                                <h3 class="text-success">Income</h3>
+                                <h2 class="display-5">₹{{ "%.2f"|format(income) }}</h2>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="p-3 bg-danger bg-opacity-10 rounded">
+                                <h3 class="text-danger">Expenses</h3>
+                                <h2 class="display-5">₹{{ "%.2f"|format(expenses) }}</h2>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="p-3 bg-primary bg-opacity-10 rounded">
+                                <h3 class="text-primary">Savings</h3>
+                                <h2 class="display-5">₹{{ "%.2f"|format(savings) }}</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Budget alerts -->
+    {% if budget_alerts %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-warning">
+                <div class="card-header bg-warning bg-opacity-10">
+                    <h4 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Budget Alerts</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        {% for alert in budget_alerts %}
+                        <li class="list-group-item border-0 d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="badge rounded-pill {% if alert.status == 'over' %}bg-danger{% else %}bg-warning{% endif %} me-2">
+                                    {% if alert.status == 'over' %}Exceeded{% else %}Near Limit{% endif %}
+                                </span>
+                                <strong>{{ alert.category }}</strong>: {{ alert.message }}
+                            </div>
+                            <a href="{{ url_for('budgets.view_budgets') }}" class="btn btn-sm btn-outline-primary">View Budget</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Chart section -->
+    <div class="row mb-4">
+        <!-- Expense pie chart -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-light">
+                    <h4 class="mb-0">Expenses by Category</h4>
+                </div>
+                <div class="card-body text-center">
+                    {% if expense_chart %}
+                    <img src="data:image/png;base64,{{ expense_chart }}" class="img-fluid" alt="Expense by Category">
+                    {% else %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>No expense data available for this month.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Income vs Expense chart -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-light">
+                    <h4 class="mb-0">Income vs Expenses</h4>
+                </div>
+                <div class="card-body text-center">
+                    {% if income_expense_chart %}
+                    <img src="data:image/png;base64,{{ income_expense_chart }}" class="img-fluid" alt="Income vs Expenses">
+                    {% else %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>No transaction data available.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <!-- Budget vs Actual chart -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-light">
+                    <h4 class="mb-0">Budget vs Actual</h4>
+                </div>
+                <div class="card-body text-center">
+                    {% if budget_chart %}
+                    <img src="data:image/png;base64,{{ budget_chart }}" class="img-fluid" alt="Budget vs Actual">
+                    {% else %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>No budget data available for this month.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Savings trend chart -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-light">
+                    <h4 class="mb-0">Savings Trend</h4>
+                </div>
+                <div class="card-body text-center">
+                    {% if savings_chart %}
+                    <img src="data:image/png;base64,{{ savings_chart }}" class="img-fluid" alt="Savings Trend">
+                    {% else %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>No savings data available.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent transactions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Recent Transactions</h4>
+                    <a href="{{ url_for('transactions.view_transactions') }}" class="btn btn-primary btn-sm">View All</a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                    <th>Category</th>
+                                    <th>Type</th>
+                                    <th class="text-end">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if recent_transactions %}
+                                {% for transaction, category_name in recent_transactions %}
+                                <tr>
+                                    <td>{{ transaction.date.strftime('%m/%d/%Y') }}</td>
+                                    <td>{{ transaction.description }}</td>
+                                    <td>{{ category_name }}</td>
+                                    <td>
+                                        <span class="badge rounded-pill {% if transaction.type == 'income' %}bg-success{% else %}bg-danger{% endif %}">
+                                            {{ transaction.type|capitalize }}
+                                        </span>
+                                    </td>
+                                    <td class="text-end {% if transaction.type == 'income' %}text-success{% else %}text-danger{% endif %}">
+                                        {% if transaction.type == 'income' %}+{% else %}-{% endif %}₹{{ "%.2f"|format(transaction.amount) }}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center">
+                                        <div class="alert alert-info mb-0">
+                                            <i class="fas fa-info-circle me-2"></i>No recent transactions.
+                                            <a href="{{ url_for('transactions.add_transaction') }}" class="alert-link">Add your first transaction</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Any dashboard-specific JavaScript can go here
+</script>
+{% endblock %}
+

@@ -1,0 +1,165 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="mb-0">Budget Management</h2>
+                        <a href="{{ url_for('budgets.set_budget') }}" class="btn btn-primary">
+                            <i class="fas fa-plus me-1"></i> Add New Budget
+                        </a>
+                    </div>
+                    
+                    <!-- Month/Year Selector -->
+                    <div class="card mb-4">
+                        <div class="card-body bg-light">
+                            <form method="get" action="{{ url_for('budgets.view_budgets') }}" class="row g-3">
+                                <div class="col-md-5">
+                                    <label for="month" class="form-label">Month</label>
+                                    <select name="month" id="month" class="form-select">
+                                        {% for month_num, month_name in month_choices %}
+                                        <option value="{{ month_num }}" {% if month_num == current_month %}selected{% endif %}>{{ month_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-5">
+                                    <label for="year" class="form-label">Year</label>
+                                    <select name="year" id="year" class="form-select">
+                                        {% for year in year_choices %}
+                                        <option value="{{ year }}" {% if year == current_year %}selected{% endif %}>{{ year }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-2 d-flex align-items-end">
+                                    <button type="submit" class="btn btn-primary w-100">Filter</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <h3 class="mb-4">{{ month_name }} Budgets</h3>
+                    
+                    {% if chart %}
+                    <div class="mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="mb-0">Budget vs. Actual Spending</h4>
+                            </div>
+                            <div class="card-body text-center">
+                                <img src="data:image/png;base64,{{ chart }}" class="img-fluid" alt="Budget vs Actual Chart">
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if budgets %}
+                    <div class="row">
+                        {% for budget, category_name, category_icon, category_color in budgets %}
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-header d-flex justify-content-between align-items-center" style="background-color: {{ category_color }}20;">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-{{ category_icon }} me-2" style="color: {{ category_color }};"></i>
+                                        {{ category_name }}
+                                    </h5>
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-link text-dark" type="button" data-bs-toggle="dropdown">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li>
+                                                <a class="dropdown-item" href="{{ url_for('budgets.set_budget', budget_id=budget.id) }}">
+                                                    <i class="fas fa-edit me-2"></i> Edit
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#deleteBudgetModal{{ budget.id }}">
+                                                    <i class="fas fa-trash-alt me-2"></i> Delete
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Budget Amount:</span>
+                                        <span class="fw-bold">₹{{ "%.2f"|format(budget.amount) }}</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Spent:</span>
+                                        <span class="fw-bold text-{% if spending[budget.id].spent > budget.amount %}danger{% else %}dark{% endif %}">
+                                            ₹{{ "%.2f"|format(spending[budget.id].spent) }}
+                                        </span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-3">
+                                        <span>Remaining:</span>
+                                        <span class="fw-bold {% if spending[budget.id].remaining < 0 %}text-danger{% elif spending[budget.id].remaining < (budget.amount * 0.1) %}text-warning{% else %}text-success{% endif %}">
+                                            ₹{{ "%.2f"|format(spending[budget.id].remaining) }}
+                                        </span>
+                                    </div>
+                                    
+                                    <div class="progress" style="height: 10px;">
+                                        <div class="progress-bar 
+                                            {% if spending[budget.id].percentage > 100 %}
+                                                bg-danger
+                                            {% elif spending[budget.id].percentage > 90 %}
+                                                bg-warning
+                                            {% else %}
+                                                bg-success
+                                            {% endif %}"
+                                            role="progressbar"
+                                            style="width: {% if spending[budget.id].percentage > 100 %}100{% else %}{{ spending[budget.id].percentage }}{% endif %}%"
+                                            aria-valuenow="{{ spending[budget.id].percentage }}"
+                                            aria-valuemin="0"
+                                            aria-valuemax="100">
+                                        </div>
+                                    </div>
+                                    <div class="text-end mt-1">
+                                        <small class="text-muted">{{ "%.1f"|format(spending[budget.id].percentage) }}% used</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Delete Confirmation Modal -->
+                            <div class="modal fade" id="deleteBudgetModal{{ budget.id }}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Confirm Deletion</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are you sure you want to delete the budget for <strong>{{ category_name }}</strong>?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <form action="{{ url_for('budgets.delete_budget', budget_id=budget.id) }}" method="POST" style="display: inline;">
+                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i> No budgets have been set for {{ month_name }}.
+                        <a href="{{ url_for('budgets.set_budget') }}" class="alert-link">Create your first budget</a> to start tracking your spending.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Any budget-specific JavaScript can go here
+</script>
+{% endblock %} 

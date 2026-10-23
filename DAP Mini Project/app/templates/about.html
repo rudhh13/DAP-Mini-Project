@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="mb-4">About Personal Finance Tracker</h2>
+                    
+                    <p class="lead">A complete solution for managing your personal finances</p>
+                    
+                    <div class="mb-4">
+                        <h4>Our Mission</h4>
+                        <p>We aim to help individuals take control of their financial future by providing powerful yet easy-to-use tools for tracking income, expenses, and savings. Our platform is designed to give you insights into your spending habits and help you make better financial decisions.</p>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h4>Key Features</h4>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Track all income and expenses with detailed categorization</li>
+                            <li class="list-group-item">Set and monitor monthly budgets by category</li>
+                            <li class="list-group-item">Visualize your finances with interactive charts and reports</li>
+                            <li class="list-group-item">Generate PDF and Excel reports for detailed analysis</li>
+                            <li class="list-group-item">Secure user authentication to protect your financial data</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h4>Technology Stack</h4>
+                        <p>Our application is built using modern web technologies:</p>
+                        <ul>
+                            <li>Backend: Python with Flask framework and SQLAlchemy ORM</li>
+                            <li>Database: SQLite for data storage</li>
+                            <li>Frontend: HTML, CSS, JavaScript with Bootstrap framework</li>
+                            <li>Data Visualization: Matplotlib and Pandas for chart generation</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h4>Privacy & Security</h4>
+                        <p>We take the security of your financial information seriously. All user data is securely stored, and passwords are hashed using industry-standard encryption methods. We do not share any personal information with third parties.</p>
+                    </div>
+                    
+                    <div class="text-center mt-5">
+                        <p>Ready to start tracking your finances?</p>
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                            {% if current_user.is_authenticated %}
+                            <a href="{{ url_for('dashboard.home') }}" class="btn btn-primary px-4">Go to Dashboard</a>
+                            {% else %}
+                            <a href="{{ url_for('auth.register') }}" class="btn btn-primary px-4 me-md-2">Get Started</a>
+                            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-secondary px-4">Login</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

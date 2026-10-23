@@ -1,0 +1,127 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="register-page py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card border-0 shadow-lg">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <i class="fas fa-user-plus text-primary fa-4x mb-3"></i>
+                            <h2 class="card-title mb-3">Create Account</h2>
+                            <p class="text-muted">Join us and start managing your finances today</p>
+                        </div>
+                        
+                        <form method="POST" action="" novalidate>
+                            {{ form.hidden_tag() }}
+                            <div class="mb-4">
+                                <div class="form-floating">
+                                    {% if form.username.errors %}
+                                        {{ form.username(class="form-control is-invalid", placeholder="Username") }}
+                                        <label for="username">Username</label>
+                                        <div class="invalid-feedback">
+                                            {% for error in form.username.errors %}
+                                                <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {{ form.username(class="form-control", placeholder="Username") }}
+                                        <label for="username">Username</label>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <div class="form-floating">
+                                    {% if form.email.errors %}
+                                        {{ form.email(class="form-control is-invalid", placeholder="Email") }}
+                                        <label for="email">Email address</label>
+                                        <div class="invalid-feedback">
+                                            {% for error in form.email.errors %}
+                                                <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {{ form.email(class="form-control", placeholder="Email") }}
+                                        <label for="email">Email address</label>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <div class="form-floating">
+                                    {% if form.password.errors %}
+                                        {{ form.password(class="form-control is-invalid", placeholder="Password") }}
+                                        <label for="password">Password</label>
+                                        <div class="invalid-feedback">
+                                            {% for error in form.password.errors %}
+                                                <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {{ form.password(class="form-control", placeholder="Password") }}
+                                        <label for="password">Password</label>
+                                    {% endif %}
+                                </div>
+                                <small class="text-muted">Password must be at least 6 characters long.</small>
+                            </div>
+                            <div class="mb-4">
+                                <div class="form-floating">
+                                    {% if form.confirm_password.errors %}
+                                        {{ form.confirm_password(class="form-control is-invalid", placeholder="Confirm Password") }}
+                                        <label for="confirm_password">Confirm Password</label>
+                                        <div class="invalid-feedback">
+                                            {% for error in form.confirm_password.errors %}
+                                                <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {{ form.confirm_password(class="form-control", placeholder="Confirm Password") }}
+                                        <label for="confirm_password">Confirm Password</label>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="d-grid mt-4">
+                                {{ form.submit(class="btn btn-primary btn-lg") }}
+                            </div>
+                        </form>
+                        
+                        <div class="text-center mt-4">
+                            <small class="text-muted">
+                                Already have an account? <a href="{{ url_for('auth.login') }}" class="text-decoration-none">Sign In</a>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Benefits panel -->
+                <div class="card mt-4 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h5 class="card-title mb-3">Benefits of Joining</h5>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item bg-transparent ps-0">
+                                <i class="fas fa-check-circle text-success me-2"></i> Track all your income and expenses
+                            </li>
+                            <li class="list-group-item bg-transparent ps-0">
+                                <i class="fas fa-check-circle text-success me-2"></i> Set and monitor budget goals
+                            </li>
+                            <li class="list-group-item bg-transparent ps-0">
+                                <i class="fas fa-check-circle text-success me-2"></i> Visualize spending patterns 
+                            </li>
+                            <li class="list-group-item bg-transparent ps-0">
+                                <i class="fas fa-check-circle text-success me-2"></i> Generate financial reports
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<style>
+    .register-page {
+        min-height: calc(100vh - 400px);
+    }
+</style>
+{% endblock %} 
